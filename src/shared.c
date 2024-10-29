@@ -36,17 +36,6 @@ off_t get_file_size(const char *file)
 	}
 	return st.st_size;
 }
-char *get_tmpdir(void)
-{
-	/*
-	 * Warning: free() the return value after use.
-	 */
-	char *ret = getenv("TMPDIR");
-	if (ret == NULL) {
-		ret = strdup("/tmp");
-	}
-	return ret;
-}
 char *get_prefix(void)
 {
 	/*

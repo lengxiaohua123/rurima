@@ -176,7 +176,6 @@ int fork_execvp(const char *argv[]);
 char *fork_execvp_get_stdout(const char *argv[]);
 int extract_archive(const char *file, const char *dir);
 off_t get_file_size(const char *file);
-char *get_tmpdir(void);
 char *get_prefix(void);
 int mkdirs(const char *path, mode_t mode);
 bool run_with_root(void);
