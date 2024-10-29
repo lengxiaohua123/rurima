@@ -35,7 +35,7 @@
  * os;version;arch;type;time;dir
  * ........
  */
-static char *line_get_value(const char *line, int index)
+static char *line_get_value(const char *_Nonnull line, int index)
 {
 	/*
 	 * Get the value of the index in the line.
@@ -60,7 +60,7 @@ static char *line_get_value(const char *line, int index)
 	free(tmp);
 	return ret;
 }
-static const char *goto_next_line(const char *buf)
+static const char *goto_next_line(const char *_Nonnull buf)
 {
 	/*
 	 * Return the pointer to the next line.
@@ -71,7 +71,7 @@ static const char *goto_next_line(const char *buf)
 	}
 	return p + 1;
 }
-static char *get_current_line(const char *buf)
+static char *get_current_line(const char *_Nonnull buf)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -103,7 +103,7 @@ static char *get_lxc_index(const char *_Nullable mirror)
 	const char *command[] = { "curl", "-L", "-s", url, NULL };
 	return fork_execvp_get_stdout(command);
 }
-static char *lxc_get_image_dir(const char *_Nullable mirror, const char *os, const char *version, const char *_Nullable architecture, const char *_Nullable type)
+static char *lxc_get_image_dir(const char *_Nullable mirror, const char *_Nonnull os, const char *_Nonnull version, const char *_Nullable architecture, const char *_Nullable type)
 {
 	char *buf = get_lxc_index(mirror);
 	const char *p = buf;
@@ -186,7 +186,7 @@ void lxc_get_image_list(const char *_Nullable mirror, const char *_Nullable arch
 	}
 	free(buf);
 }
-void lxc_search_image(const char *_Nullable mirror, const char *os, const char *_Nullable architecture)
+void lxc_search_image(const char *_Nullable mirror, const char *_Nonnull os, const char *_Nullable architecture)
 {
 	if (architecture == NULL) {
 		architecture = get_host_arch();
@@ -230,7 +230,7 @@ void lxc_search_image(const char *_Nullable mirror, const char *os, const char *
 		error("No image found.");
 	}
 }
-void lxc_pull_image(const char *_Nullable mirror, const char *os, const char *version, const char *_Nullable architecture, const char *_Nullable type, const char *savedir)
+void lxc_pull_image(const char *_Nullable mirror, const char *_Nonnull os, const char *_Nonnull version, const char *_Nullable architecture, const char *_Nullable type, const char *_Nonnull savedir)
 {
 	char *dir = lxc_get_image_dir(mirror, os, version, architecture, type);
 	if (dir == NULL) {

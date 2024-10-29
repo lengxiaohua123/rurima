@@ -28,7 +28,7 @@
  *
  */
 #include "include/rurima.h"
-static char *get_token(const char *image)
+static char *get_token(const char *_Nonnull image)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -47,7 +47,7 @@ static char *get_token(const char *image)
 	log("{base}Token: {cyan}%s{clear}\n", ret);
 	return ret;
 }
-static char *get_tag_manifests(const char *image, const char *tag, const char *token)
+static char *get_tag_manifests(const char *_Nonnull image, const char *_Nonnull tag, const char *_Nonnull token)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -69,7 +69,7 @@ static char *get_tag_manifests(const char *image, const char *tag, const char *t
 	free(auth);
 	return ret;
 }
-static char *get_tag_digest(const char *manifests, const char *_Nullable architecture)
+static char *get_tag_digest(const char *_Nonnull manifests, const char *_Nullable architecture)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -86,7 +86,7 @@ static char *get_tag_digest(const char *manifests, const char *_Nullable archite
 	free(tmp);
 	return digest;
 }
-static char **get_blobs(const char *image, const char *digest, const char *token)
+static char **get_blobs(const char *_Nonnull image, const char *_Nonnull digest, const char *_Nonnull token)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -120,7 +120,7 @@ static char **get_blobs(const char *image, const char *digest, const char *token
 	free(auth);
 	return ret;
 }
-static void pull_images(const char *image, char *const *blobs, const char *token, const char *savedir)
+static void pull_images(const char *_Nonnull image, char *const *_Nonnull blobs, const char *_Nonnull token, const char *_Nonnull savedir)
 {
 	/*
 	 * Pull images.
@@ -148,7 +148,7 @@ static void pull_images(const char *image, char *const *blobs, const char *token
 		remove(filename);
 	}
 }
-static char *get_config(const char *image, const char *digest, const char *token)
+static char *get_config(const char *_Nonnull image, const char *_Nonnull digest, const char *_Nonnull token)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -174,7 +174,7 @@ static char *get_config(const char *image, const char *digest, const char *token
 	free(auth);
 	return config;
 }
-static char **get_cmdline(const char *image, const char *config, const char *token)
+static char **get_cmdline(const char *_Nonnull image, const char *_Nonnull config, const char *_Nonnull token)
 {
 	char url[4096] = { '\0' };
 	strcat(url, "https://registry-1.docker.io/v2/library/");
@@ -207,7 +207,7 @@ static char **get_cmdline(const char *image, const char *config, const char *tok
 	free(cmdline);
 	return ret;
 }
-char **docker_pull(const char *image, const char *tag, const char *_Nullable architecture, const char *savedir)
+char **docker_pull(const char *_Nonnull image, const char *_Nonnull tag, const char *_Nullable architecture, const char *_Nonnull savedir)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -234,7 +234,7 @@ char **docker_pull(const char *image, const char *tag, const char *_Nullable arc
 	free(config);
 	return cmdline;
 }
-static char *__docker_search(const char *url)
+static char *__docker_search(const char *_Nonnull url)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -297,7 +297,7 @@ static char *__docker_search(const char *url)
 	free(is_offical);
 	return next_url;
 }
-int docker_search(const char *image, const char *page_size)
+int docker_search(const char *_Nonnull image, const char *_Nonnull page_size)
 {
 	char *url = malloc(4096);
 	url[0] = '\0';
@@ -310,11 +310,7 @@ int docker_search(const char *image, const char *page_size)
 		char *next_url = __docker_search(url);
 		log("{base}nexturl: {cyan}%s{clear}\n", next_url);
 		char goto_next[114] = { '\0' };
-		cprintf("\n{purple}Continue see more results? (y/n): ");
-		fflush(stdout);
-		fflush(stdin);
-		scanf("%113s", goto_next);
-		fflush(stdout);
+		get_input("\n{purple}Continue see more results? (y/n): ", goto_next);
 		log("{base}goto_next: {cyan}%s{clear}\n", goto_next);
 		if (strcmp(goto_next, "y") == 0) {
 			free(url);
@@ -328,7 +324,7 @@ int docker_search(const char *image, const char *page_size)
 	}
 	return 0;
 }
-static char *__docker_search_tag(const char *image, const char *url, const char *_Nullable architecture)
+static char *__docker_search_tag(const char *_Nonnull image, const char *_Nonnull url, const char *_Nullable architecture)
 {
 	/*
 	 * Warning: free() the return value after use.
@@ -381,7 +377,7 @@ static char *__docker_search_tag(const char *image, const char *url, const char 
 	free(tags);
 	return next_url;
 }
-int docker_search_tag(const char *image, const char *page_size, const char *_Nullable architecture)
+int docker_search_tag(const char *_Nonnull image, const char *_Nonnull page_size, const char *_Nullable architecture)
 {
 	char *url = malloc(4096);
 	url[0] = '\0';
@@ -394,11 +390,7 @@ int docker_search_tag(const char *image, const char *page_size, const char *_Nul
 		char *next_url = __docker_search_tag(image, url, architecture);
 		log("{base}nexturl: {cyan}%s{clear}\n", next_url);
 		char goto_next[114] = { '\0' };
-		cprintf("\n{purple}Continue see more results? (y/n): ");
-		fflush(stdout);
-		fflush(stdin);
-		scanf("%113s", goto_next);
-		fflush(stdout);
+		get_input("\n{purple}Continue see more results? (y/n): ", goto_next);
 		log("{base}goto_next: {cyan}%s{clear}\n", goto_next);
 		if (strcmp(goto_next, "y") == 0) {
 			free(url);

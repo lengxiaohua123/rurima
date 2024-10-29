@@ -28,7 +28,18 @@
  *
  */
 #include "include/rurima.h"
-off_t get_file_size(const char *file)
+void get_input(char *_Nonnull message, char *_Nonnull buf)
+{
+	/*
+	 * Warning: Not a safe function.
+	 */
+	cprintf("%s", message);
+	fflush(stdout);
+	fflush(stdin);
+	scanf("%s", buf);
+	fflush(stdout);
+}
+off_t get_file_size(const char *_Nonnull file)
 {
 	struct stat st;
 	if (stat(file, &st) == -1) {
@@ -47,7 +58,7 @@ char *get_prefix(void)
 	}
 	return ret;
 }
-int mkdirs(const char *path, mode_t mode)
+int mkdirs(const char *_Nonnull path, mode_t mode)
 {
 	/*
 	 * A very simple implementation of mkdir -p.

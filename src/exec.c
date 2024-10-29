@@ -29,7 +29,7 @@
  *
  */
 #include "include/rurima.h"
-int fork_execvp(const char *argv[])
+int fork_execvp(const char *_Nonnull argv[])
 {
 	/*
 	 * fork(2) and then execvp(3).
@@ -45,7 +45,7 @@ int fork_execvp(const char *argv[])
 	waitpid(pid, &status, 0);
 	return WEXITSTATUS(status);
 }
-char *fork_execvp_get_stdout(const char *argv[])
+char *fork_execvp_get_stdout(const char *_Nonnull argv[])
 {
 	/*
 	 * Warning: free() after use.

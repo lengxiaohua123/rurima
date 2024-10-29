@@ -65,7 +65,7 @@ struct RURIMA *init_config(void)
 	ret->container.memory = NULL;
 	return ret;
 }
-char *dump_ruri_config(struct RURIMA *config)
+char *dump_ruri_config(struct RURIMA *_Nonnull config)
 {
 	/*
 	 * Dump ruri config from RURIMA struct.

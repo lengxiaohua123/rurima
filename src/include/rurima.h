@@ -172,22 +172,23 @@ struct __attribute__((aligned(128))) RURIMA {
 	}
 #endif
 // Functions.
-int fork_execvp(const char *argv[]);
-char *fork_execvp_get_stdout(const char *argv[]);
-int extract_archive(const char *file, const char *dir);
-off_t get_file_size(const char *file);
+int fork_execvp(const char *_Nonnull argv[]);
+char *fork_execvp_get_stdout(const char *_Nonnull argv[]);
+int extract_archive(const char *_Nonnull file, const char *_Nonnull dir);
+off_t get_file_size(const char *_Nonnull file);
 char *get_prefix(void);
-int mkdirs(const char *path, mode_t mode);
+int mkdirs(const char *_Nonnull path, mode_t mode);
 bool run_with_root(void);
-int docker_search(const char *image, const char *page_size);
-int docker_search_tag(const char *image, const char *page_size, const char *_Nullable architecture);
-char **docker_pull(const char *image, const char *tag, const char *_Nullable architecture, const char *savedir);
+int docker_search(const char *_Nonnull image, const char *_Nonnull page_size);
+int docker_search_tag(const char *_Nonnull image, const char *_Nonnull page_size, const char *_Nullable architecture);
+char **docker_pull(const char *_Nonnull image, const char *_Nonnull tag, const char *_Nullable architecture, const char *_Nonnull savedir);
 void register_signal(void);
 char *get_host_arch(void);
-void lxc_pull_image(const char *_Nullable mirror, const char *os, const char *version, const char *_Nullable architecture, const char *_Nullable type, const char *savedir);
+void lxc_pull_image(const char *_Nullable mirror, const char *_Nonnull os, const char *_Nonnull version, const char *_Nullable architecture, const char *_Nullable type, const char *_Nonnull savedir);
 void lxc_get_image_list(const char *_Nullable mirror, const char *_Nullable architecture);
-void lxc_search_image(const char *_Nullable mirror, const char *os, const char *_Nullable architecture);
-void docker(int argc, char **argv);
-void lxc(int argc, char **argv);
-void unpack(int argc, char **argv);
+void lxc_search_image(const char *_Nullable mirror, const char *_Nonnull os, const char *_Nullable architecture);
+void docker(int argc, char **_Nonnull argv);
+void lxc(int argc, char **_Nonnull argv);
+void unpack(int argc, char **_Nonnull argv);
 struct RURIMA *init_config(void);
+void get_input(char *_Nonnull message, char *_Nonnull buf);

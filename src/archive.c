@@ -28,7 +28,7 @@
  *
  */
 #include "include/rurima.h"
-static char **get_extract_command(const char *file, const char *dir)
+static char **get_extract_command(const char *_Nonnull file, const char *_Nonnull dir)
 {
 	/*
 	 * Warning: free() after use.
@@ -96,7 +96,7 @@ static void show_progress(double per)
 	fflush(stdout);
 	printf("\033[?25h");
 }
-int extract_archive(const char *file, const char *dir)
+int extract_archive(const char *_Nonnull file, const char *_Nonnull dir)
 {
 	/*
 	 * Extract the archive.

@@ -31,7 +31,7 @@
 /*
  * Subcommand for rurima.
  */
-void docker(int argc, char **argv)
+void docker(int argc, char **_Nonnull argv)
 {
 	char *image = NULL;
 	char *tag = NULL;
@@ -120,7 +120,7 @@ void docker(int argc, char **argv)
 		error("{red}Invalid subcommand!\n");
 	}
 }
-void lxc(int argc, char **argv)
+void lxc(int argc, char **_Nonnull argv)
 {
 	char *mirror = NULL;
 	char *os = NULL;
@@ -203,7 +203,7 @@ void lxc(int argc, char **argv)
 		error("{red}Invalid subcommand!\n");
 	}
 }
-void unpack(int argc, char **argv)
+void unpack(int argc, char **_Nonnull argv)
 {
 	char *file = NULL;
 	char *dir = NULL;
