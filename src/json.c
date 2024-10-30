@@ -476,7 +476,7 @@ char *json_anon_layer_get_key(const char *_Nonnull buf, const char *_Nonnull key
 			continue;
 		}
 		if (strcmp(valtmp, value) == 0) {
-			char *ret = json_get_key_one_level(p, key_to_get);
+			char *ret = json_get_key(p, key_to_get);
 			free(valtmp);
 			return ret;
 		}

@@ -78,7 +78,7 @@ static char *get_tag_digest(const char *_Nonnull manifests, const char *_Nullabl
 		architecture = get_host_arch();
 	}
 	char *tmp = json_get_key(manifests, "[manifests]");
-	char *digest = json_anon_layer_get_key(tmp, "[platform][architecture]", architecture, "digest");
+	char *digest = json_anon_layer_get_key(tmp, "[platform][architecture]", architecture, "[digest]");
 	if (digest == NULL) {
 		error("{red}No digest found!\n");
 	}
@@ -357,7 +357,7 @@ static char *__docker_search_tag(const char *_Nonnull image, const char *_Nonnul
 	bool found = false;
 	char *tmp = NULL;
 	for (size_t i = 0; i < len; i++) {
-		tmp = json_anon_layer_get_key(images[i], "[architecture]", architecture, "digest");
+		tmp = json_anon_layer_get_key(images[i], "[architecture]", architecture, "[digest]");
 		if (tmp != NULL) {
 			found = true;
 			cprintf("{yellow}[%s]: {cyan}%s{clear}\n", image, tags[i]);
