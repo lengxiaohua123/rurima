@@ -445,7 +445,7 @@ size_t json_anon_layer_get_key_array(const char *_Nonnull buf, const char *_Nonn
 	size_t ret = 0;
 	const char *p = tmp;
 	while (p != NULL) {
-		(*array)[ret] = json_get_key_one_level(p, key);
+		(*array)[ret] = json_get_key(p, key);
 		if ((*array)[ret] != NULL) {
 			log("{base}array[%ld]: {cyan}%s{clear}\n", ret, (*array)[ret]);
 		} else {

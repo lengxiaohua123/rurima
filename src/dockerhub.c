@@ -111,7 +111,7 @@ static char **get_blobs(const char *_Nonnull image, const char *_Nonnull digest,
 		error("{red}Failed to get layers!\n");
 	}
 	char **ret = NULL;
-	size_t len = json_anon_layer_get_key_array(layers, "digest", &ret);
+	size_t len = json_anon_layer_get_key_array(layers, "[digest]", &ret);
 	if (len == 0) {
 		error("{red}Failed to get layers!\n");
 	}
@@ -254,17 +254,17 @@ static char *__docker_search(const char *_Nonnull url)
 	}
 	log("{base}Results:\n{cyan}%s{clear}\n", results);
 	char **name = NULL;
-	size_t len = json_anon_layer_get_key_array(results, "repo_name", &name);
+	size_t len = json_anon_layer_get_key_array(results, "[repo_name]", &name);
 	if (len == 0) {
 		error("{red}No results found!\n");
 	}
 	char **description = NULL;
-	size_t len2 = json_anon_layer_get_key_array(results, "short_description", &description);
+	size_t len2 = json_anon_layer_get_key_array(results, "[short_description]", &description);
 	if (len2 != len) {
 		error("{red}Incorrect json!\n");
 	}
 	char **is_offical = NULL;
-	size_t len3 = json_anon_layer_get_key_array(results, "is_official", &is_offical);
+	size_t len3 = json_anon_layer_get_key_array(results, "[is_official]", &is_offical);
 	if (len3 != len) {
 		error("{red}Incorrect json!\n");
 	}
@@ -345,12 +345,12 @@ static char *__docker_search_tag(const char *_Nonnull image, const char *_Nonnul
 	log("{base}next_url: {cyan}%s{clear}\n", next_url);
 	char *results = json_get_key(response, "[results]");
 	char **images = NULL;
-	size_t len = json_anon_layer_get_key_array(results, "images", &images);
+	size_t len = json_anon_layer_get_key_array(results, "[images]", &images);
 	if (len == 0) {
 		error("{red}No results found!\n");
 	}
 	char **tags = NULL;
-	size_t len2 = json_anon_layer_get_key_array(results, "name", &tags);
+	size_t len2 = json_anon_layer_get_key_array(results, "[name]", &tags);
 	if (len2 != len) {
 		error("{red}Incorrect json!\n");
 	}
