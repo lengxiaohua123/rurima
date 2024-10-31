@@ -28,6 +28,18 @@
  *
  */
 #include "include/rurima.h"
+bool proot_exist(void)
+{
+	const char *cmd[] = { "proot", "ls", NULL };
+	char *ret = fork_execvp_get_stdout(cmd);
+	if (ret == NULL) {
+		log("{red}proot not found.\n");
+		return false;
+	}
+	free(ret);
+	log("{green}proot found.\n");
+	return true;
+}
 static char **get_extract_command(const char *_Nonnull file, const char *_Nonnull dir)
 {
 	/*
@@ -38,7 +50,7 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 	 * Only support tar, gzip, xz.
 	 * If the file is not supported, return NULL.
 	 */
-	char **ret = malloc(sizeof(char *) * 8);
+	char **ret = malloc(sizeof(char *) * 14);
 	const char *file_command[] = { "file", "--brief", "--mime-type", file, NULL };
 	char *type = fork_execvp_get_stdout(file_command);
 	if (type == NULL) {
@@ -46,31 +58,70 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 		return NULL;
 	}
 	type[strlen(type) - 1] = '\0';
-	if (strcmp(type, "application/gzip") == 0) {
-		ret[0] = "tar";
-		ret[1] = "-xzf";
-		ret[2] = "-";
-		ret[3] = "-C";
-		ret[4] = (char *)dir;
-		ret[5] = NULL;
-	} else if (strcmp(type, "application/x-xz") == 0) {
-		ret[0] = "tar";
-		ret[1] = "-xJf";
-		ret[2] = "-";
-		ret[3] = "-C";
-		ret[4] = (char *)dir;
-		ret[5] = NULL;
-	} else if (strcmp(type, "application/x-tar") == 0) {
-		ret[0] = "tar";
-		ret[1] = "-xf";
-		ret[2] = "-";
-		ret[3] = "-C";
-		ret[4] = (char *)dir;
-		ret[5] = NULL;
+	if (!run_with_root() && proot_exist()) {
+		if (strcmp(type, "application/gzip") == 0) {
+			ret[0] = "proot";
+			ret[1] = "-0";
+			ret[2] = "tar";
+			ret[3] = "-xzf";
+			ret[4] = "-";
+			ret[5] = "-C";
+			ret[6] = (char *)dir;
+			ret[7] = NULL;
+		} else if (strcmp(type, "application/x-xz") == 0) {
+			ret[0] = "proot";
+			ret[1] = "-0";
+			ret[2] = "tar";
+			ret[3] = "-xJf";
+			ret[4] = "-";
+			ret[5] = "-C";
+			ret[6] = (char *)dir;
+			ret[7] = NULL;
+		} else if (strcmp(type, "application/x-tar") == 0) {
+			ret[0] = "proot";
+			ret[1] = "-0";
+			ret[2] = "tar";
+			ret[3] = "-xf";
+			ret[4] = "-";
+			ret[5] = "-C";
+			ret[6] = (char *)dir;
+			ret[7] = NULL;
+		} else {
+			free(type);
+			free(ret);
+			return NULL;
+		}
 	} else {
-		free(type);
-		free(ret);
-		return NULL;
+		if (!run_with_root()) {
+			warning("{yellow}You are not running as root,\n");
+			warning("{yellow}but proot not found, it might cause bugs unpacking rootfs.\n\n");
+		}
+		if (strcmp(type, "application/gzip") == 0) {
+			ret[0] = "tar";
+			ret[1] = "-xzf";
+			ret[2] = "-";
+			ret[3] = "-C";
+			ret[4] = (char *)dir;
+			ret[5] = NULL;
+		} else if (strcmp(type, "application/x-xz") == 0) {
+			ret[0] = "tar";
+			ret[1] = "-xJf";
+			ret[2] = "-";
+			ret[3] = "-C";
+			ret[4] = (char *)dir;
+			ret[5] = NULL;
+		} else if (strcmp(type, "application/x-tar") == 0) {
+			ret[0] = "tar";
+			ret[1] = "-xf";
+			ret[2] = "-";
+			ret[3] = "-C";
+			ret[4] = (char *)dir;
+			ret[5] = NULL;
+		} else {
+			free(type);
+			free(ret);
+			return NULL;
+		}
 	}
 	free(type);
 	return ret;
