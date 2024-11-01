@@ -30,6 +30,10 @@
 #include "include/rurima.h"
 bool proot_exist(void)
 {
+	/*
+	 * Test if proot exist.
+	 * We use proot to execute ls, so that we can check if proot is really available.
+	 */
 	const char *cmd[] = { "proot", "ls", NULL };
 	char *ret = fork_execvp_get_stdout(cmd);
 	if (ret == NULL) {
@@ -49,6 +53,9 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 	 * Get the command to extract the archive.
 	 * Only support tar, gzip, xz.
 	 * If the file is not supported, return NULL.
+	 *
+	 * If we are not running with root, and proot exist,
+	 * we will use proot to extract the archive.
 	 */
 	char **ret = malloc(sizeof(char *) * 14);
 	const char *file_command[] = { "file", "--brief", "--mime-type", file, NULL };
