@@ -42,6 +42,7 @@
 #include <termios.h>
 #include <limits.h>
 #include <dirent.h>
+#include <sys/time.h>
 // This program need be linked with -lcap.
 #include <sys/capability.h>
 // Bool!!!
