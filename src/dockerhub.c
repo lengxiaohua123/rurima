@@ -135,7 +135,7 @@ static void pull_images(const char *_Nonnull image, char *const *_Nonnull blobs,
 		if (blobs[i] == NULL) {
 			break;
 		}
-		cprintf("{yellow}Pulling {cyan}%s\n", blobs[i]);
+		cprintf("{base}Pulling {cyan} %s {base}as{cyan} layer-%d\n", blobs[i], i);
 		sprintf(url, "https://registry-1.docker.io/v2/library/%s/blobs/%s", image, blobs[i]);
 		sprintf(filename, "layer-%d", i);
 		char *auth = malloc(strlen(token) + 114);

@@ -100,7 +100,7 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 		}
 	} else {
 		if (!run_with_root()) {
-			warning("{yellow}You are not running as root,\n");
+			warning("{yellow}You are not running as root,");
 			warning("{yellow}but proot not found, it might cause bugs unpacking rootfs.\n\n");
 		}
 		if (strcmp(type, "application/gzip") == 0) {
@@ -145,10 +145,10 @@ static void show_progress(double per)
 	printf("\033[?25l");
 	printf("\r[\033[32m");
 	for (unsigned short i = 0; i < pos; i++) {
-		printf(">");
+		printf("\033[1;38;2;254;228;208m/");
 	}
 	for (unsigned short i = pos; i < width; i++) {
-		printf("\033[33m=");
+		printf("\033[0m ");
 	}
 	printf("\033[0m] %.2f%%", per * 100);
 	fflush(stdout);
@@ -177,7 +177,7 @@ int extract_archive(const char *_Nonnull file, const char *_Nonnull dir)
 		free(command);
 		return 1;
 	}
-	cprintf("{yellow}Extracting {cyan}%s :\n", file);
+	cprintf("{base}Extracting {cyan}%s :\n", file);
 	FILE *fp = fopen(file, "rb");
 	int pipefd[2];
 	if (pipe(pipefd) == -1) {
@@ -198,10 +198,13 @@ int extract_archive(const char *_Nonnull file, const char *_Nonnull dir)
 		exit(114);
 	} else {
 		close(pipefd[0]);
-		char buf[1024];
+		// When buf is only 1024, it's very slow.
+		// But when buf is 114514, it's fast enough.
+		// So, this is the power of homo!!!!!!
+		char *buf = malloc(114514);
 		size_t bytes_read;
 		size_t total_read = 0;
-		while ((bytes_read = fread(buf, 1, 1024, fp)) > 0) {
+		while ((bytes_read = fread(buf, 1, 114514, fp)) > 0) {
 			total_read += bytes_read;
 			double progress = (double)total_read / (double)size;
 			show_progress(progress);

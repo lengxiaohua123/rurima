@@ -245,7 +245,7 @@ void lxc_pull_image(const char *_Nullable mirror, const char *_Nonnull os, const
 	}
 	char *url = malloc(strlen(mirror) + strlen(dir) + 114);
 	sprintf(url, "%s/%srootfs.tar.xz", mirror, dir);
-	cprintf("{yellow}Downloading {cyan}%s :\n", url);
+	cprintf("{base}Downloading {cyan}%s :\n", url);
 	const char *command[] = { "curl", "-L", "-s", url, "-o", "rootfs.tar.xz", NULL };
 	fork_execvp(command);
 	extract_archive("rootfs.tar.xz", ".");
