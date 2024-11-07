@@ -44,6 +44,22 @@ bool proot_exist(void)
 	log("{green}proot found.\n");
 	return true;
 }
+bool proot_support_link2symlink(void)
+{
+	/*
+	 * Test if proot support link2symlink.
+	 * We use proot to execute ls, so that we can check if proot is really available.
+	 */
+	const char *cmd[] = { "proot", "--link2symlink", "ls", NULL };
+	char *ret = fork_execvp_get_stdout(cmd);
+	if (ret == NULL) {
+		log("{red}proot not support --link2symlink.\n");
+		return false;
+	}
+	free(ret);
+	log("{green}proot support --link2symlink.\n");
+	return true;
+}
 static char **get_extract_command(const char *_Nonnull file, const char *_Nonnull dir)
 {
 	/*
@@ -66,37 +82,75 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 	}
 	type[strlen(type) - 1] = '\0';
 	if (!run_with_root() && proot_exist()) {
-		if (strcmp(type, "application/gzip") == 0) {
-			ret[0] = "proot";
-			ret[1] = "-0";
-			ret[2] = "tar";
-			ret[3] = "-xzf";
-			ret[4] = "-";
-			ret[5] = "-C";
-			ret[6] = (char *)dir;
-			ret[7] = NULL;
-		} else if (strcmp(type, "application/x-xz") == 0) {
-			ret[0] = "proot";
-			ret[1] = "-0";
-			ret[2] = "tar";
-			ret[3] = "-xJf";
-			ret[4] = "-";
-			ret[5] = "-C";
-			ret[6] = (char *)dir;
-			ret[7] = NULL;
-		} else if (strcmp(type, "application/x-tar") == 0) {
-			ret[0] = "proot";
-			ret[1] = "-0";
-			ret[2] = "tar";
-			ret[3] = "-xf";
-			ret[4] = "-";
-			ret[5] = "-C";
-			ret[6] = (char *)dir;
-			ret[7] = NULL;
+		if (proot_support_link2symlink()) {
+			if (strcmp(type, "application/gzip") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "--link2symlink";
+				ret[3] = "tar";
+				ret[4] = "-xpzf";
+				ret[5] = "-";
+				ret[6] = "-C";
+				ret[7] = (char *)dir;
+				ret[8] = NULL;
+			} else if (strcmp(type, "application/x-xz") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "--link2symlink";
+				ret[3] = "tar";
+				ret[4] = "-xpJf";
+				ret[5] = "-";
+				ret[6] = "-C";
+				ret[7] = (char *)dir;
+				ret[8] = NULL;
+			} else if (strcmp(type, "application/x-tar") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "--link2symlink";
+				ret[3] = "tar";
+				ret[4] = "-xpf";
+				ret[5] = "-";
+				ret[6] = "-C";
+				ret[7] = (char *)dir;
+				ret[8] = NULL;
+			} else {
+				free(type);
+				free(ret);
+				return NULL;
+			}
 		} else {
-			free(type);
-			free(ret);
-			return NULL;
+			if (strcmp(type, "application/gzip") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "tar";
+				ret[3] = "-xpzf";
+				ret[4] = "-";
+				ret[5] = "-C";
+				ret[6] = (char *)dir;
+				ret[7] = NULL;
+			} else if (strcmp(type, "application/x-xz") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "tar";
+				ret[3] = "-xpJf";
+				ret[4] = "-";
+				ret[5] = "-C";
+				ret[6] = (char *)dir;
+				ret[7] = NULL;
+			} else if (strcmp(type, "application/x-tar") == 0) {
+				ret[0] = "proot";
+				ret[1] = "-0";
+				ret[2] = "tar";
+				ret[3] = "-xpf";
+				ret[4] = "-";
+				ret[5] = "-C";
+				ret[6] = (char *)dir;
+				ret[7] = NULL;
+			} else {
+				free(type);
+				free(ret);
+				return NULL;
+			}
 		}
 	} else {
 		if (!run_with_root()) {
@@ -105,21 +159,21 @@ static char **get_extract_command(const char *_Nonnull file, const char *_Nonnul
 		}
 		if (strcmp(type, "application/gzip") == 0) {
 			ret[0] = "tar";
-			ret[1] = "-xzf";
+			ret[1] = "-xpzf";
 			ret[2] = "-";
 			ret[3] = "-C";
 			ret[4] = (char *)dir;
 			ret[5] = NULL;
 		} else if (strcmp(type, "application/x-xz") == 0) {
 			ret[0] = "tar";
-			ret[1] = "-xJf";
+			ret[1] = "-xpJf";
 			ret[2] = "-";
 			ret[3] = "-C";
 			ret[4] = (char *)dir;
 			ret[5] = NULL;
 		} else if (strcmp(type, "application/x-tar") == 0) {
 			ret[0] = "tar";
-			ret[1] = "-xf";
+			ret[1] = "-xpf";
 			ret[2] = "-";
 			ret[3] = "-C";
 			ret[4] = (char *)dir;
@@ -220,6 +274,7 @@ int extract_archive(const char *_Nonnull file, const char *_Nonnull dir)
 		show_progress(1.0);
 		printf("\n");
 		free(command);
+		free(buf);
 		return 0;
 	}
 	free(command);
