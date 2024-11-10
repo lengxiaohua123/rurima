@@ -210,7 +210,7 @@ static char **get_cmdline(const char *_Nonnull image, const char *_Nonnull confi
 	}
 	char *cmdline = json_get_key(response, "[config][Cmd]");
 	if (cmdline == NULL) {
-		error("{red}Failed to get cmdline!\n");
+		error("{red}Failed to get cmdline %s!\n", response);
 	}
 	log("{base}Cmdline: {cyan}%s{clear}\n", cmdline);
 	free(response);
