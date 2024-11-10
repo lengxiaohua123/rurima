@@ -38,6 +38,7 @@ void docker(int argc, char **_Nonnull argv)
 	char *architecture = NULL;
 	char *savedir = NULL;
 	char *page_size = NULL;
+	bool quiet = false;
 	if (argc == 0) {
 		error("{red}No subcommand specified!\n");
 	}
@@ -47,26 +48,35 @@ void docker(int argc, char **_Nonnull argv)
 				error("{red}No image specified!\n");
 			}
 			image = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--tag") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No tag specified!\n");
 			}
 			tag = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--arch") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No architecture specified!\n");
 			}
 			architecture = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--savedir") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No save directory specified!\n");
 			}
 			savedir = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-p") == 0 || strcmp(argv[i], "--page_size") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No page size specified!\n");
 			}
 			page_size = argv[i + 1];
+			i++;
+		} else if (strcmp(argv[i], "-q") == 0 || strcmp(argv[i], "--quiet") == 0) {
+			quiet = true;
+		} else {
+			error("{red}Unknown argument!\n");
 		}
 	}
 	if (strcmp(argv[0], "search") == 0) {
@@ -76,7 +86,7 @@ void docker(int argc, char **_Nonnull argv)
 		if (page_size == NULL) {
 			page_size = "10";
 		}
-		docker_search(image, page_size);
+		docker_search(image, page_size, quiet);
 	} else if (strcmp(argv[0], "tag") == 0) {
 		if (page_size == NULL) {
 			page_size = "10";
@@ -84,7 +94,7 @@ void docker(int argc, char **_Nonnull argv)
 		if (image == NULL) {
 			error("{red}No image specified!\n");
 		}
-		docker_search_tag(image, page_size, architecture);
+		docker_search_tag(image, page_size, architecture, quiet);
 	} else if (strcmp(argv[0], "pull") == 0) {
 		if (tag == NULL) {
 			error("{red}No tag specified!\n");
@@ -116,6 +126,7 @@ void docker(int argc, char **_Nonnull argv)
 		cprintf("{green}  -a, --arch: Architecture of image.\n");
 		cprintf("{green}  -s, --savedir: Save directory of image.\n");
 		cprintf("{green}  -p, --page_size: Page size of search.\n");
+		cprintf("{green}  -q, --quiet: Quiet mode.\n");
 	} else {
 		error("{red}Invalid subcommand!\n");
 	}
@@ -137,31 +148,39 @@ void lxc(int argc, char **_Nonnull argv)
 				error("{red}No mirror specified!\n");
 			}
 			mirror = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "--os") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No os specified!\n");
 			}
 			os = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No version specified!\n");
 			}
 			version = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "--arch") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No architecture specified!\n");
 			}
 			architecture = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--type") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No type specified!\n");
 			}
 			type = argv[i + 1];
+			i++;
 		} else if (strcmp(argv[i], "-s") == 0 || strcmp(argv[i], "--savedir") == 0) {
 			if (i + 1 >= argc) {
 				error("{red}No save directory specified!\n");
 			}
 			savedir = argv[i + 1];
+			i++;
+		} else {
+			error("{red}Unknown argument!\n");
 		}
 	}
 	if (strcmp(argv[0], "pull") == 0) {
@@ -228,6 +247,8 @@ void unpack(int argc, char **_Nonnull argv)
 			cprintf("{green}  -d, --dir: Directory to unpack.\n");
 			cprintf("{green}  -h, --help: Show help message.\n");
 			return;
+		} else {
+			error("{red}Unknown argument!\n");
 		}
 	}
 	if (file == NULL) {

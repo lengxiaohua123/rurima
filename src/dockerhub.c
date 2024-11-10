@@ -297,7 +297,7 @@ static char *__docker_search(const char *_Nonnull url)
 	free(is_offical);
 	return next_url;
 }
-int docker_search(const char *_Nonnull image, const char *_Nonnull page_size)
+int docker_search(const char *_Nonnull image, const char *_Nonnull page_size, bool quiet)
 {
 	char *url = malloc(4096);
 	url[0] = '\0';
@@ -309,6 +309,11 @@ int docker_search(const char *_Nonnull image, const char *_Nonnull page_size)
 		log("{base}url: {cyan}%s{clear}\n", url);
 		char *next_url = __docker_search(url);
 		log("{base}nexturl: {cyan}%s{clear}\n", next_url);
+		if (quiet) {
+			free(url);
+			free(next_url);
+			break;
+		}
 		char goto_next[114] = { '\0' };
 		get_input("\n{purple}Continue see more results? (y/n): ", goto_next);
 		log("{base}goto_next: {cyan}%s{clear}\n", goto_next);
@@ -377,7 +382,7 @@ static char *__docker_search_tag(const char *_Nonnull image, const char *_Nonnul
 	free(tags);
 	return next_url;
 }
-int docker_search_tag(const char *_Nonnull image, const char *_Nonnull page_size, const char *_Nullable architecture)
+int docker_search_tag(const char *_Nonnull image, const char *_Nonnull page_size, const char *_Nullable architecture, bool quiet)
 {
 	char *url = malloc(4096);
 	url[0] = '\0';
@@ -389,6 +394,11 @@ int docker_search_tag(const char *_Nonnull image, const char *_Nonnull page_size
 		log("{base}url: {cyan}%s{clear}\n", url);
 		char *next_url = __docker_search_tag(image, url, architecture);
 		log("{base}nexturl: {cyan}%s{clear}\n", next_url);
+		if (quiet) {
+			free(url);
+			free(next_url);
+			break;
+		}
 		char goto_next[114] = { '\0' };
 		get_input("\n{purple}Continue see more results? (y/n): ", goto_next);
 		log("{base}goto_next: {cyan}%s{clear}\n", goto_next);
